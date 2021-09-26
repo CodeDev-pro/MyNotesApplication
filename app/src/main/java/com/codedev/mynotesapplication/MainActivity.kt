@@ -8,31 +8,27 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.codedev.mynotesapplication.presentation.notes.NoteScreen
 import com.codedev.mynotesapplication.ui.theme.MyNotesApplicationTheme
+import com.codedev.mynotesapplication.ui.theme.TextDarkGray
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MyNotesApplicationTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                Surface(color = TextDarkGray) {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "home"){
+                        composable(route = "home") {
+                            NoteScreen(navController = navController)
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    MyNotesApplicationTheme {
-        Greeting("Android")
     }
 }
