@@ -10,22 +10,4 @@ import com.codedev.mynotesapplication.domain.models.Note
 abstract class NoteDatabase : RoomDatabase() {
 
     abstract val noteDao: NoteDao
-
-    companion object {
-        private var instance: NoteDatabase? = null
-
-        operator fun invoke(application: Application) = instance?: synchronized(this) {
-            instance?:createDatabase(application).also {
-                instance = it
-            }
-        }
-
-        private fun createDatabase(application: Application) : NoteDatabase {
-            return Room.databaseBuilder(
-                application,
-                NoteDatabase::class.java,
-                "note_db"
-            ).build()
-        }
-    }
 }

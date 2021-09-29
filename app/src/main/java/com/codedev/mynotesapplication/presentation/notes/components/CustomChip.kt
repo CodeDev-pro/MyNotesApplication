@@ -13,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.codedev.mynotesapplication.ui.theme.CustomLightDarkGray
 import com.codedev.mynotesapplication.ui.theme.TextLightGray
 import com.codedev.mynotesapplication.ui.theme.TextWhite
 
@@ -26,7 +28,10 @@ fun CustomChip(
 ) {
     Box(
         modifier = modifier
-            .padding(start = 7.5.dp, end = 7.5.dp, top = 15.dp, bottom = 15.dp)
+            .padding(start = 7.5.dp, end = 7.5.dp, top = 7.5.dp, bottom = 7.5.dp)
+            .clickable {
+
+            }
             .border(
                 width = 2.dp,
                 shape = RoundedCornerShape(10.dp),
@@ -35,12 +40,10 @@ fun CustomChip(
             .clip(
                 RoundedCornerShape(10.dp)
             )
-            .background(if (selected) Color.Transparent else TextLightGray)
-            .clickable {
-
-            },
+            .background(if (selected) Color.Transparent else CustomLightDarkGray)
+            .padding(10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, style = MaterialTheme.typography.body1)
+        Text(text, style = MaterialTheme.typography.body1.copy(color = TextWhite))
     }
 }

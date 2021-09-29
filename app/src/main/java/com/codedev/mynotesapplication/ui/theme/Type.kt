@@ -37,5 +37,5 @@ val Typography = Typography(
         fontWeight = FontWeight.Light,
         fontSize = 12.sp,
         color = TextLightGray
-    )
+    ),
 )

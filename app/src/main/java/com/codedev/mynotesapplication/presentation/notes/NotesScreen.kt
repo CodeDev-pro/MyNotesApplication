@@ -13,10 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.codedev.mynotesapplication.presentation.Screen
+import com.codedev.mynotesapplication.presentation.notes.components.FilterSection
 import com.codedev.mynotesapplication.presentation.notes.components.NoteCard
 import com.codedev.mynotesapplication.presentation.notes.components.TopAppBar
 import com.codedev.mynotesapplication.ui.theme.TextDarkGray
-import com.codedev.mynotesapplication.ui.theme.TextLightGray
 import com.codedev.mynotesapplication.ui.theme.TextWhite
 
 @Composable
@@ -30,14 +31,12 @@ fun NoteScreen(
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .background(TextDarkGray)
-            .padding(7.5.dp),
+            .fillMaxSize(),
         scaffoldState = scaffoldState,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
+                    navController.navigate(Screen.AddEditNoteScreen.route)
                 },
                 backgroundColor = TextDarkGray,
                 elevation = FloatingActionButtonDefaults.elevation(5.dp),
@@ -48,25 +47,42 @@ fun NoteScreen(
                     contentDescription = "Add note"
                 )
             }
-        }
+        },
+        backgroundColor = TextDarkGray
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(7.5.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(7.5.dp)
+                .background(Color.Transparent),
         ) {
-            TopAppBar()
-            Spacer(modifier = Modifier.height(10.dp))
-            if(state.loading) {
-                CircularProgressIndicator(color = TextLightGray, strokeWidth = 4.dp)
-            } else LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(state.notes.size, key = {  }){
-                    NoteCard(note = state.notes[it])
+            Spacer(modifier = Modifier.height(5.dp))
+            TopAppBar(
+                onSearchClicked = {}
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            FilterSection(
+                onOrderChanged = {
+                    viewModel.execute(NoteEvents.ChangeOrder(it))
+                },
+                noteOrder = viewModel.noteState.value.noteOrder
+            )
+            if (state.loading) {
+                CircularProgressIndicator(
+                    color = TextWhite,
+                    strokeWidth = 4.dp,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            } else
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Transparent)
+                ) {
+                    items(state.notes.size) {
+                        NoteCard(note = state.notes[it])
+                    }
                 }
-            }
         }
     }
 }

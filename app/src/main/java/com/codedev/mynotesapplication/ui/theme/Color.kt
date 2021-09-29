@@ -17,3 +17,9 @@ val LightGreen = Color(0xffe7ed9b)
 val TextLightGray = Color(0xffA5A5A5)
 val TextDarkGray = Color(0xff414141)
 val TextWhite = Color(0xffeeeeee)
+
+val noteColors = listOf(
+    LivingCoral, RoseQuartz, Serenity, RedPink, BabyBlue, RedOrange
+)
+
+val CustomLightDarkGray = Color(0xffdbdbdb).copy(alpha = 0.3f)

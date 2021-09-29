@@ -1,6 +1,7 @@
 package com.codedev.mynotesapplication.presentation.notes.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -15,39 +16,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.codedev.mynotesapplication.R
-import com.codedev.mynotesapplication.ui.theme.TextLightGray
-import com.codedev.mynotesapplication.ui.theme.TextWhite
+import com.codedev.mynotesapplication.ui.theme.*
 
 @Composable
 fun TopAppBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSearchClicked: () -> Unit
 ) {
-    Box(modifier = modifier) {
+    Box(modifier = modifier.fillMaxWidth().background(TextDarkGray)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp)
         ) {
             Text(
                 text = "Notes",
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6.copy(color = TextWhite, fontSize = 25.sp)
             )
 
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
-                    .background(TextLightGray)
-                    .padding(10.dp),
+                    .clickable { onSearchClicked() }
+                    .background(CustomLightDarkGray)
+                    .padding(5.dp),
                 contentAlignment = Alignment.Center
             ) {
-                IconButton(onClick = { }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "Search Icon",
-                        tint = TextWhite
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    modifier = Modifier.padding(10.dp).size(24.dp),
+                    contentDescription = "Search Icon",
+                    tint = TextWhite
+                )
             }
         }
     }

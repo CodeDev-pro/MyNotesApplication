@@ -1,6 +1,7 @@
 package com.codedev.mynotesapplication.di
 
 import android.app.Application
+import androidx.room.Room
 import com.codedev.mynotesapplication.data.datasource.NoteDao
 import com.codedev.mynotesapplication.data.datasource.NoteDatabase
 import com.codedev.mynotesapplication.data.repository.NoteRepository
@@ -19,18 +20,23 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteDao(application: Application) =
-        NoteDatabase(application).noteDao
-
-    @Provides
-    @Singleton
-    fun provideNoteRepository(noteDao: NoteDao): NoteRepository {
-        return NoteRepositoryImpl(noteDao)
+    fun provideNoteDatabase(application: Application): NoteDatabase {
+        return Room.databaseBuilder(
+            application,
+            NoteDatabase::class.java,
+            "note_db"
+        ).build()
     }
 
     @Provides
     @Singleton
-    fun provideNoteUseCases(repository: NoteRepository) : NoteUseCases {
+    fun provideNoteRepository(db: NoteDatabase): NoteRepository {
+        return NoteRepositoryImpl(db.noteDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNoteUseCases(repository: NoteRepository): NoteUseCases {
         return NoteUseCases(
             getNote = GetNote(repository),
             getAllNotes = GetAllNotes(repository),

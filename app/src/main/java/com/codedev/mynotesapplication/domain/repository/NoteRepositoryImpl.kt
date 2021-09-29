@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
-    private val noteDao: NoteDao
+    val noteDao: NoteDao
 ) : NoteRepository {
     override fun getAllNotes(): Flow<List<Note>> {
         return noteDao.getAllNotes()
