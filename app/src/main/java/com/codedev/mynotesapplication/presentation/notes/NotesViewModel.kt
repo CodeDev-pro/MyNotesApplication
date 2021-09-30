@@ -1,15 +1,21 @@
 package com.codedev.mynotesapplication.presentation.notes
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.codedev.mynotesapplication.domain.models.Note
+import com.codedev.mynotesapplication.domain.util.ListOrderType
+import com.codedev.mynotesapplication.domain.util.NoteOrder
 import com.codedev.mynotesapplication.domain.util.NoteUseCases
 import com.codedev.mynotesapplication.domain.util.Resources
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,16 +32,22 @@ class NotesViewModel @Inject constructor(
     val noteState: State<NoteState> = _noteState
 
     var latestDeletedNote: Note? = null
+    var getNotesJob: Job? = null
+
+    init {
+        getNotes(NoteOrder.Date(ListOrderType.AscendingOrder))
+    }
 
     fun execute(event: NoteEvents) {
         viewModelScope.launch {
             when(event) {
                 is NoteEvents.ChangeOrder -> {
-                    noteUseCases.getAllNotes(event.noteOrder).collectLatest {
-                        _noteState.value = _noteState.value.copy(
-                            notes = it
-                        )
+                    Log.d("TAG", "execute: change order ${event.noteOrder}")
+                    if(noteState.value.noteOrder::class == event.noteOrder::class
+                        && noteState.value.noteOrder.orderType == event.noteOrder.orderType) {
+                        return@launch
                     }
+                    getNotes(event.noteOrder)
                 }
                 is NoteEvents.DeleteNote -> {
                     noteUseCases.deleteNote(event.note)
@@ -74,6 +86,16 @@ class NotesViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun getNotes(noteOrder: NoteOrder) {
+        getNotesJob?.cancel()
+        getNotesJob = noteUseCases.getAllNotes(noteOrder).onEach {
+            _noteState.value = noteState.value.copy(
+                notes = it,
+                noteOrder = noteOrder
+            )
+        }.launchIn(viewModelScope)
     }
 
     sealed class UiEvent {

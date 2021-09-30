@@ -69,7 +69,14 @@ fun AddNoteScreen(
                 .background(Color.Transparent)
         ) {
             Spacer(modifier = Modifier.height(10.dp))
-            TopAppBar()
+            TopAppBar(
+                onBackClicked = {
+                    navController.navigateUp()
+                },
+                onSaveClicked = {
+                    viewModel.onEvent(AddEditNoteEvents.SaveNote)
+                }
+            )
             Spacer(modifier = Modifier.height(10.dp))
             PickColorSection(
                 selectedColor = noteBackgroundAnimation.value,
@@ -91,7 +98,11 @@ fun AddNoteScreen(
                 onTextChange = {
                     viewModel.onEvent(AddEditNoteEvents.EnteredTitle(it))
                 },
-                value = noteTitleState.text
+                value = noteTitleState.text,
+                isHintVisible = noteTitleState.isHintVisible,
+                onFocusChanged = {
+                    viewModel.onEvent(AddEditNoteEvents.ChangeContentFocus(it))
+                }
             )
             Spacer(modifier = Modifier.height(15.dp))
             TransparentTextField(
@@ -101,7 +112,11 @@ fun AddNoteScreen(
                 onTextChange = {
                     viewModel.onEvent(AddEditNoteEvents.EnteredContent(it))
                 },
-                value = noteContentState.text
+                value = noteContentState.text,
+                isHintVisible = noteContentState.isHintVisible,
+                onFocusChanged = {
+                    viewModel.onEvent(AddEditNoteEvents.ChangeContentFocus(it))
+                }
             )
         }
     }

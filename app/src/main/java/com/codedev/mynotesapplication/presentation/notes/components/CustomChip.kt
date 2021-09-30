@@ -30,7 +30,7 @@ fun CustomChip(
         modifier = modifier
             .padding(start = 7.5.dp, end = 7.5.dp, top = 7.5.dp, bottom = 7.5.dp)
             .clickable {
-
+                onSelect()
             }
             .border(
                 width = 2.dp,

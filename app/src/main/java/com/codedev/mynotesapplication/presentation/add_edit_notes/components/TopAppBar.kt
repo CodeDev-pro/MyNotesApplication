@@ -23,10 +23,11 @@ import androidx.compose.ui.unit.sp
 import com.codedev.mynotesapplication.R
 import com.codedev.mynotesapplication.ui.theme.*
 
-@Preview(showBackground = true)
 @Composable
 fun TopAppBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClicked: () -> Unit,
+    onSaveClicked: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -41,6 +42,9 @@ fun TopAppBar(
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
+                    .clickable {
+                        onBackClicked()
+                    }
                     .background(CustomLightDarkGray)
                     .padding(5.dp),
                 contentAlignment = Alignment.Center
@@ -57,7 +61,9 @@ fun TopAppBar(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
                     .background(CustomLightDarkGray)
-                    .clickable { }
+                    .clickable {
+                        onSaveClicked()
+                    }
                     .padding(15.dp),
                 contentAlignment = Alignment.Center
             ) {

@@ -4,8 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,14 +29,18 @@ import com.codedev.mynotesapplication.ui.theme.TextLightGray
 @Composable
 fun NoteCard(
     modifier: Modifier = Modifier,
-    note: Note
+    note: Note,
+    onClick: (Note) -> Unit,
+    onDeleteClick: (Note) -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(7.5.dp)
             .clip(RoundedCornerShape(15.dp))
-            .clickable {  }
+            .clickable {
+                onClick(note)
+            }
             .background(Color(note.color))
             .padding(vertical = 15.dp, horizontal = 10.dp)
     ) {
@@ -64,6 +72,11 @@ fun NoteCard(
                 fontSize = 15.sp,
                 color = TextDarkGray
             )
+        }
+        Box(modifier = Modifier.align(Alignment.TopEnd).padding(end = 7.5.dp)) {
+            IconButton(onClick = { onDeleteClick(note) }) {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "delete Icon", Modifier.size(24.dp))
+            }
         }
     }
 }

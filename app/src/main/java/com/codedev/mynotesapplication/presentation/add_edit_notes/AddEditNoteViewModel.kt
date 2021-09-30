@@ -1,6 +1,7 @@
 package com.codedev.mynotesapplication.presentation.add_edit_notes
 
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
@@ -47,7 +48,21 @@ class AddEditNoteViewModel @Inject constructor(
 
     init {
         savedStateHandle.get<Int>("noteId")?.let {
-
+            if(it != -1) {
+                viewModelScope.launch {
+                    useCases.getNote(it).also { note ->
+                        currentNoteId = note.id
+                        _noteTitle.value = noteTitle.value.copy(
+                            text = note.title,
+                            isHintVisible = false
+                        )
+                        _noteContent.value = noteTitle.value.copy(
+                            text = note.content,
+                            isHintVisible = false
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -62,10 +77,15 @@ class AddEditNoteViewModel @Inject constructor(
                 _noteColor.value = event.color
             }
             is AddEditNoteEvents.ChangeContentFocus -> {
-
+                Log.d("TAG", "onEvent: change focus ${event.focusState}")
+                _noteContent.value = noteContent.value.copy(
+                    isHintVisible = _noteContent.value.text.isBlank()
+                )
             }
             is AddEditNoteEvents.ChangeTitleFocus -> {
-
+                _noteTitle.value = noteTitle.value.copy(
+                    isHintVisible = _noteTitle.value.text.isBlank()
+                )
             }
             is AddEditNoteEvents.EnteredContent -> {
                 _noteContent.value = noteContent.value.copy(

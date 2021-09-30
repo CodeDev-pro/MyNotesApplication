@@ -10,8 +10,8 @@ sealed class NoteOrder(
     fun copy(orderType: ListOrderType): NoteOrder {
         return when(this) {
             is Title -> Title(orderType)
-            is Color -> Date(orderType)
-            is Date -> Color(orderType)
+            is Color -> Color(orderType)
+            is Date -> Date(orderType)
         }
     }
 }
