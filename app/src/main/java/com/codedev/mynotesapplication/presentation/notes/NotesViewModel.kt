@@ -42,7 +42,6 @@ class NotesViewModel @Inject constructor(
         viewModelScope.launch {
             when(event) {
                 is NoteEvents.ChangeOrder -> {
-                    Log.d("TAG", "execute: change order ${event.noteOrder}")
                     if(noteState.value.noteOrder::class == event.noteOrder::class
                         && noteState.value.noteOrder.orderType == event.noteOrder.orderType) {
                         return@launch

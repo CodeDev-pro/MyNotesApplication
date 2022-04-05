@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.codedev.mynotesapplication.presentation.add_edit_notes.AddNoteScreen
 import com.codedev.mynotesapplication.presentation.notes.NoteScreen
+import com.codedev.mynotesapplication.presentation.search_notes.Search
 import com.codedev.mynotesapplication.ui.theme.MyNotesApplicationTheme
 import com.codedev.mynotesapplication.ui.theme.TextDarkGray
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,6 +54,9 @@ class MainActivity : ComponentActivity() {
                                 navController = navController,
                                 noteColor = backStackEntry.arguments?.getInt("noteColor") ?: -1
                             )
+                        }
+                        composable(route = Screen.SearchNoteScreen.route) {
+                            Search()
                         }
                     }
                 }

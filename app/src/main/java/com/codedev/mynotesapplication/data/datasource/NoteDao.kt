@@ -13,9 +13,6 @@ interface NoteDao {
     @Query("SELECT * FROM note")
     fun getAllNotes(): Flow<List<Note>>
 
-    @Query("SELECT * FROM note WHERE title LIKE :title")
-    suspend fun searchNote(title: String): List<Note>
-
     @Query("SELECT * FROM note WHERE id = :id")
     suspend fun getNote(id: Int): Note
 
@@ -24,5 +21,8 @@ interface NoteDao {
 
     @Update
     suspend fun updateNote(note: Note)
+
+    @Query("SELECT * FROM note WHERE title LIKE :title OR content LIKE :title")
+    fun searchNote(title: String): Flow<List<Note>>
 
 }

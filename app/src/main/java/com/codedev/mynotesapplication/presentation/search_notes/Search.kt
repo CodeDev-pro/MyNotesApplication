@@ -1,4 +1,4 @@
-package com.codedev.mynotesapplication.presentation.notes
+package com.codedev.mynotesapplication.presentation.search_notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,7 +7,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,37 +14,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.codedev.mynotesapplication.presentation.Screen
+import com.codedev.mynotesapplication.presentation.notes.NoteEvents
 import com.codedev.mynotesapplication.presentation.notes.components.FilterSection
 import com.codedev.mynotesapplication.presentation.notes.components.NoteCard
 import com.codedev.mynotesapplication.presentation.notes.components.TopAppBar
 import com.codedev.mynotesapplication.ui.theme.TextDarkGray
 import com.codedev.mynotesapplication.ui.theme.TextWhite
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun NoteScreen(
+fun Search(
     navController: NavController,
-    viewModel: NotesViewModel = hiltViewModel()
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
 
     val scaffoldState = rememberScaffoldState()
-    val state = viewModel.noteState.value
-
-    LaunchedEffect(key1 = true) {
-        viewModel.uiEvent.collectLatest { event ->
-            when(event) {
-                is NotesViewModel.UiEvent.DeletedSuccessfully -> {
-                    val result = scaffoldState.snackbarHostState.showSnackbar("Deleted Successfully", "Undo")
-                    if (result == SnackbarResult.ActionPerformed) {
-                        viewModel.execute(NoteEvents.RestoreNote)
-                    }
-                }
-                is NotesViewModel.UiEvent.Error -> {
-                    scaffoldState.snackbarHostState.showSnackbar(event.message)
-                }
-            }
-        }
-    }
+    val state = viewModel.state.value
 
     Scaffold(
         modifier = Modifier
@@ -75,10 +58,10 @@ fun NoteScreen(
                 .background(Color.Transparent),
         ) {
             Spacer(modifier = Modifier.height(5.dp))
-            TopAppBar(
-                onSearchClicked = {
-                    navController.navigate(Screen.SearchNoteScreen.route)
-                }
+            SearchAppBar(
+                onValueChanged = {
+                                 viewModel.execute(SearchEvents.SearchNote(it))
+                }, onSubmit = {}, value = state.query
             )
             Spacer(modifier = Modifier.height(5.dp))
             if (state.loading) {
@@ -93,19 +76,11 @@ fun NoteScreen(
                         .fillMaxSize()
                         .background(Color.Transparent)
                 ) {
-                    item {
-                        FilterSection(
-                            onOrderChanged = {
-                                viewModel.execute(NoteEvents.ChangeOrder(it))
-                            },
-                            noteOrder = viewModel.noteState.value.noteOrder
-                        )
-                    }
-                    items(state.notes.size) {
-                        NoteCard(note = state.notes[it], onClick = { note ->
+                    items(state.data.size) {
+                        NoteCard(note = state.data[it], onClick = { note ->
                             navController.navigate(Screen.AddEditNoteScreen.route + "?noteId=${note.id}&noteColor=${note.color}")
                         }, onDeleteClick = { note ->
-                            viewModel.execute(NoteEvents.DeleteNote(note))
+                            viewModel.execute(SearchEvents.DeleteNote(note))
                         })
                     }
                 }
